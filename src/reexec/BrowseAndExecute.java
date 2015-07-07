@@ -43,6 +43,8 @@ public class BrowseAndExecute {
 			));
 
 	private ArrayList<String> listCodes = new ArrayList<String>();
+	
+	private HashMap<String, Long> timeOutPerExercise = new HashMap<String, Long>();
 
 	private static HashMap<String,String> oldToNewExo = new HashMap<String,String>();
 	static {
@@ -91,8 +93,31 @@ public class BrowseAndExecute {
 
 		Exercise exo = (Exercise) g.getCurrentLesson().getCurrentExercise();
 
-		exo.getSourceFile(lang, 0).setBody(code);
+		String correction = exo.getSourceFile(lang, 0).getCorrection().split("SOLUTION")[1];
+		correction = correction.substring(3, correction.length()-7);
+		exo.getSourceFile(lang, 0).setBody(correction);
 		
+		long timeOut = 0;
+		
+		if(timeOutPerExercise.containsKey(exoID)) {
+			timeOut = timeOutPerExercise.get(exoID);
+		} else {
+			long start = System.nanoTime();
+			g.startExerciseExecution();
+			Game.waitRunners();
+			timeOut = System.nanoTime()-start;
+			g.stopExerciseExecution();
+			g.reset();
+			timeOutPerExercise.put(exoID, timeOut);
+		}
+		
+		
+		/*System.out.println("\n"+exoID);
+		System.out.println("timeOut = "+timeOut);
+		/*System.out.println("Time = "+(stop-start)/1000000);
+		System.out.println("Timeout = "+1.2*(stop-start)/1000000);*/
+		
+		exo.getSourceFile(lang, 0).setBody(code);
 		boolean timeout = false;
 
 		ExecutorService exec = Executors.newSingleThreadExecutor();
@@ -104,7 +129,7 @@ public class BrowseAndExecute {
 			}
 		});
 		try {
-			System.out.println(f.get(15, TimeUnit.SECONDS));
+			System.out.println(f.get((long) (50*timeOut), TimeUnit.NANOSECONDS));
 		} catch (TimeoutException e) {
 			timeout = true;
 		}

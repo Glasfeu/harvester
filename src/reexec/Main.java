@@ -42,9 +42,9 @@ public class Main {
 		ite.addValidBranch("refs/remotes/origin/PLM0266985b7338b528ca1a1cd97ab0d032ee5af2f4");
 		ite.addValidBranch("refs/remotes/origin/PLM065351a5aa002f465d5dd23648dcdfa1ec46b000");
 		ite.addValidBranch("refs/remotes/origin/PLM02d0f5013b796ce1f9245ebe995451edea2447d2");*/
-		//ite.addValidBranch("refs/remotes/origin/PLMb9c5556003558a5aa5b5a48239a456e8c0171f17");
+//		ite.addValidBranch("refs/remotes/origin/PLMb9c5556003558a5aa5b5a48239a456e8c0171f17");
 		ite.setCollectCode(true);
-		ite.setCollectError(true);
+//		ite.setCollectError(true);
 		int nbBranch = 0;
 		int nbFails = 0;
 		
